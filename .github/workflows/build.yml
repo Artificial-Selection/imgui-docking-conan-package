@@ -44,10 +44,13 @@ jobs:
         run: |
           $env:CONAN_HOME_DIR=$(conan config home)
           $env:CONAN_HOME_DIR
-          echo "CONAN_HOME_DIR=$env:CONAN_HOME_DIR" >> $GITHUB_ENV
+          echo "CONAN_HOME_DIR=$($env:CONAN_HOME_DIR)" >> $GITHUB_ENV
           cd $env:CONAN_HOME_DIR/data
           Get-Location
           dir imgui
+
+      - name: LOL
+        run: echo ${{ env.CONAN_HOME_DIR }}
 
       - name: Upload package
         uses: actions/upload-artifact@v2
