@@ -42,9 +42,8 @@ jobs:
       - name: Go to .conan/data dir
         shell: pwsh
         run: |
-          $env:CONAN_HOME_DIR=$(conan config home)
-          $env:CONAN_HOME_DIR
-          cd $env:CONAN_HOME_DIR/data
+          echo "CONAN_HOME_DIR=$(conan config home)" >> $GITHUB_ENV
+          cd ${{ env.CONAN_HOME_DIR }}/data
           Get-Location
           dir imgui
 
