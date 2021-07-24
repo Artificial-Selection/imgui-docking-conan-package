@@ -46,6 +46,7 @@ jobs:
           $env:CONAN_HOME_DIR
           cd $env:CONAN_HOME_DIR/data
           Get-Location
+          dir imgui
 
       - name: Upload package
         uses: actions/upload-artifact@v2
