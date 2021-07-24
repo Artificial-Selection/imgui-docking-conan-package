@@ -20,7 +20,6 @@ jobs:
         config:
           - os: windows-latest
             name: Windows MSVC
-            shell: pwsh
 
     steps:
       - name: Get source code
@@ -41,7 +40,7 @@ jobs:
         run: conan create . imgui/${{ env.IMGUI_VERSION }}@
 
       - name: Go to .conan/data dir
-        shell: ${{ matrix.config.shell }}
+        shell: pwsh
         run: |
           $env:CONAN_HOME_DIR=$(conan config home)
           $env:CONAN_HOME_DIR
