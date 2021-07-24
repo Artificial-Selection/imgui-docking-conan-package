@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    shell: ${{ matrix.config.shell }}
+
+    env:
+      IMGUI_VERSION: 18311_docking
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: windows-latest
+            name: Windows MSVC
+            shell: pwsh
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.6'
+          architecture: 'x64'
+
+      - name: Install conan
+        run: |
+          pip install wheel setuptools
+          pip install conan
+
+      - name: Create imgui conan package
+        run: conan create . imgui/${{ env.IMGUI_VERSION }}@
+
+      - name: Go to .conan/data dir
+        run: |
+          $env:CONAN_HOME_DIR=$(conan config home)
+          $env:CONAN_HOME_DIR
+          cd $env:CONAN_HOME_DIR/data
+
+      - name: Upload package
+      - uses: actions/upload-artifact@v2
+        with:
+          name: imgui_${{ env.IMGUI_VERSION }}
+          path: |
+            !imgui/${{ env.IMGUI_VERSION }}/_/_/build
+            !imgui/${{ env.IMGUI_VERSION }}/_/_/export_source
+            !imgui/${{ env.IMGUI_VERSION }}/_/_/source
