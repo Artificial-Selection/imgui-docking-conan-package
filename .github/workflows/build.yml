@@ -10,7 +10,6 @@ jobs:
   build:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
-    shell: ${{ matrix.config.shell }}
 
     env:
       IMGUI_VERSION: 18311_docking
@@ -42,6 +41,7 @@ jobs:
         run: conan create . imgui/${{ env.IMGUI_VERSION }}@
 
       - name: Go to .conan/data dir
+        shell: ${{ matrix.config.shell }}
         run: |
           $env:CONAN_HOME_DIR=$(conan config home)
           $env:CONAN_HOME_DIR
