@@ -39,21 +39,20 @@ jobs:
       - name: Create imgui conan package
         run: conan create . imgui/${{ env.IMGUI_VERSION }}@
 
-      - name: Go to .conan/data dir
-        shell: pwsh
-        run: |
-          $env:CONAN_HOME_DIR=$(conan config home)
-          $env:CONAN_HOME_DIR
-          echo "CONAN_HOME_DIR=$($env:CONAN_HOME_DIR)" >> $GITHUB_ENV
-          cd $env:CONAN_HOME_DIR/data
-          Get-Location
-          dir imgui
+      #- name: Go to .conan/data dir
+      #  shell: pwsh
+      #  run: |
+      #    $env:CONAN_HOME_DIR=$(conan config home)
+      #    $env:CONAN_HOME_DIR
+      #    echo "CONAN_HOME_DIR=$($env:CONAN_HOME_DIR)" >> $GITHUB_ENV
+      #    cd $env:CONAN_HOME_DIR/data
+      #    Get-Location
+      #    dir imgui
 
       - name: Upload package
         uses: actions/upload-artifact@v2
         with:
           name: imgui_${{ env.IMGUI_VERSION }}
-          #${{ env.CONAN_HOME_DIR }}/data/imgui/**
           path: |
             C:\Users\runneradmin\.conan\data\imgui
             !C:\Users\runneradmin\.conan\data\imgui\${{ env.IMGUI_VERSION }}\_\_\build
