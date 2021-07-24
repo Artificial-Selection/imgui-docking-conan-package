@@ -45,12 +45,14 @@ jobs:
           $env:CONAN_HOME_DIR=$(conan config home)
           $env:CONAN_HOME_DIR
           cd $env:CONAN_HOME_DIR/data
+          Get-Location
 
       - name: Upload package
         uses: actions/upload-artifact@v2
         with:
           name: imgui_${{ env.IMGUI_VERSION }}
           path: |
+            imgui/
             !imgui/${{ env.IMGUI_VERSION }}/_/_/build
             !imgui/${{ env.IMGUI_VERSION }}/_/_/export_source
             !imgui/${{ env.IMGUI_VERSION }}/_/_/source
