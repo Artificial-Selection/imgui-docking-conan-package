@@ -49,16 +49,13 @@ jobs:
           Get-Location
           dir imgui
 
-      #- name: LOL
-      #  run: echo ${{ env.CONAN_HOME_DIR }}
-
       - name: Upload package
         uses: actions/upload-artifact@v2
         with:
           name: imgui_${{ env.IMGUI_VERSION }}
           #${{ env.CONAN_HOME_DIR }}/data/imgui/**
           path: |
-            C:\Users\runneradmin\.conan\data\imgui\**
+            C:\Users\runneradmin\.conan\data\imgui\
             !C:\Users\runneradmin\.conan\data\imgui\${{ env.IMGUI_VERSION }}\_\_\build
             !C:\Users\runneradmin\.conan\data\imgui\${{ env.IMGUI_VERSION }}\_\_\export_source
             !C:\Users\runneradmin\.conan\data\imgui\${{ env.IMGUI_VERSION }}\_\_\source
