@@ -48,7 +48,7 @@ jobs:
           cd $env:CONAN_HOME_DIR/data
 
       - name: Upload package
-      - uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2
         with:
           name: imgui_${{ env.IMGUI_VERSION }}
           path: |
