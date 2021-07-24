@@ -53,7 +53,7 @@ jobs:
         with:
           name: imgui_${{ env.IMGUI_VERSION }}
           path: |
-            imgui/
+            ${{ env.CONAN_HOME_DIR }}/data/imgui/**
             !imgui/${{ env.IMGUI_VERSION }}/_/_/build
             !imgui/${{ env.IMGUI_VERSION }}/_/_/export_source
             !imgui/${{ env.IMGUI_VERSION }}/_/_/source
