@@ -44,7 +44,7 @@ jobs:
       - name: Setup conan user
         run: conan user "${{ secrets.GITLAB_USERNAME }}" -r gitlab -p "${{ secrets.GITLAB_ACCESS_TOKEN }}"
 
-      - name: Create glad conan package
+      - name: Create imgui conan package
         run: |
           conan create . ${{ env.IMGUI_PACKAGE }} -s build_type=Debug
           conan create . ${{ env.IMGUI_PACKAGE }} -s build_type=Release
