@@ -1,0 +1,58 @@
+name: "Build and publish"
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
+    env:
+      IMGUI_PACKAGE: "imgui/18311@snv/docking"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: windows-latest
+            name: Windows MSVC
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.6'
+          architecture: 'x64'
+
+      - name: Install conan
+        run: |
+          pip install wheel setuptools
+          pip install conan
+
+      - name: Setup conan.conf
+        run: |
+          conan remote add gitlab https://gitlab.com/api/v4/projects/28364651/packages/conan
+          conan config set general.revisions_enabled=1
+
+      - name: Setup conan user
+        run: conan user "${{ secrets.GITLAB_USERNAME }}" -r gitlab -p "${{ secrets.GITLAB_ACCESS_TOKEN }}"
+
+      - name: Create imgui conan package
+        run: |
+          conan create . ${{ env.IMGUI_PACKAGE }} -s build_type=Debug
+          conan create . ${{ env.IMGUI_PACKAGE }} -s build_type=Release
+
+      - name: Dry package upload
+        if: ${{ github.event_name == 'pull_request' }}
+        run: conan upload ${{ env.IMGUI_PACKAGE }} --all --check --skip-upload --remote gitlab
+
+      - name: Upload package to GitLab
+        if: ${{ github.event_name == 'push' && github.event.ref == 'refs/heads/master' }}
+        run: conan upload ${{ env.IMGUI_PACKAGE }} --all --check --remote gitlab
