@@ -8,8 +8,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.os }}
 
     env:
       IMGUI_PACKAGE: "imgui/18311@snv/docking"
@@ -17,9 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - os: windows-latest
-            name: Windows MSVC
+        os: [windows-2019]
+        compiler: [msvc]
 
     steps:
       - name: Get source code
@@ -40,9 +38,7 @@ jobs:
         run: |
           conan remote add gitlab https://gitlab.com/api/v4/projects/28364651/packages/conan
           conan config set general.revisions_enabled=1
-
-      - name: Setup conan user
-        run: conan user "${{ secrets.GITLAB_USERNAME }}" -r gitlab -p "${{ secrets.GITLAB_ACCESS_TOKEN }}"
+          conan user "${{ secrets.GITLAB_USERNAME }}" -r gitlab -p "${{ secrets.GITLAB_ACCESS_TOKEN }}"
 
       - name: Create imgui conan package
         run: |
