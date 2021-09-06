@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      IMGUI_PACKAGE: "imgui/18311@snv/docking"
+      IMGUI_PACKAGE: "imgui/18410@snv/docking"
 
     strategy:
       fail-fast: false
