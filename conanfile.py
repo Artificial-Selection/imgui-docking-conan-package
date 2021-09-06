@@ -13,23 +13,22 @@ class IMGUIConan(ConanFile):
     topics = ("conan", "imgui", "gui", "graphical")
     license = "MIT"
 
-    exports_sources = ["CMakeLists.txt"]
-    generators = "cmake"
-
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared": [True, False],
-         "fPIC": [True, False]
+         "fPIC": [True, False],
     }
     default_options = {
         "shared": False,
-        "fPIC": True
+        "fPIC": True,
     }
 
-#-- Add glad/glfw for backends
+    exports_sources = "CMakeLists.txt"
+    generators = "cmake"
+
+#-- Add glfw for backends
     requires = [
-        'glad/0.1.34@snv/stable',
-        'glfw/3.3.4'
+        'glfw/3.3.4',
     ]
 #--
 
@@ -56,11 +55,15 @@ class IMGUIConan(ConanFile):
         backends_files = [
             "imgui_impl_glfw",
             "imgui_impl_opengl3",
+            "imgui_impl_dx11",
+            "imgui_impl_dx12",
         ]
-        
+
         for file_name in backends_files:
             shutil.move(os.path.join(backends_folder, f'{file_name}.h'), self._source_subfolder)
             shutil.move(os.path.join(backends_folder, f'{file_name}.cpp'), self._source_subfolder)
+
+        shutil.move(os.path.join(backends_folder, "imgui_impl_opengl3_loader.h"), self._source_subfolder)
 #--
 
     def _configure_cmake(self):
@@ -76,13 +79,22 @@ class IMGUIConan(ConanFile):
 
     def package(self):
         self.copy(pattern="LICENSE.txt", dst="licenses", src=self._source_subfolder)
+        # backends_folder = os.path.join(
+        #     self._source_subfolder,
+        #     "backends" if tools.Version(self.version) >= "1.80" else "examples"
+        # )
+        # self.copy(pattern="imgui_impl_*",
+        #           dst=os.path.join("res", "bindings"),
+        #           src=backends_folder)
         cmake = self._configure_cmake()
         cmake.install()
 
     def package_info(self):
         self.cpp_info.libs = ["imgui"]
+        self.cpp_info.defines.append("IMGUI_USER_CONFIG=\"imgui_user_config.h\"")
         if self.settings.os == "Linux":
             self.cpp_info.system_libs.append("m")
+        # self.cpp_info.srcdirs = [os.path.join("res", "bindings")]
 
         bin_path = os.path.join(self.package_folder, "bin")
         self.output.info("Appending PATH env var with : {}".format(bin_path))
